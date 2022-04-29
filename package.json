@@ -1,0 +1,19 @@
+{
+  "name": "artillery-breech",
+  "version": "1.0.0",
+  "description": "Programmatically run artillery scenarios",
+  "main": "breech.js",
+  "scripts": {
+    "test": "tap --no-coverage --jobs=1"
+  },
+  "author": "sdeaks@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "artillery": "^2.0.0-14"
+  },
+  "devDependencies": {
+    "http": "^0.0.1-security",
+    "tap": "^16.1.0",
+    "ws": "^7.5.7"
+  }
+}
