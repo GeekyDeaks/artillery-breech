@@ -1,6 +1,6 @@
 {
   "name": "artillery-breech",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Programmatically run artillery scenarios",
   "main": "breech.js",
   "scripts": {
