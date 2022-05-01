@@ -10,7 +10,7 @@ Programmatically run artillery scenarios
 
 This is intended to allow artillery scenarios to be easily used for end-to-end testing with the potential to re-use the same scenarios for complete load testing.
 
-It simply exposes the artillery launcher around a thin promise wrapper, but this bypasses a lot of the artillery cli initialisation, which means you are responsible for much of the heavy lifting, including loading the script, plugins and processor.  It also only creates one worker instance, so it's not really suitable for launching an actual loadtest
+It simply exposes the artillery launcher around a thin promise wrapper, however this bypasses a lot of the artillery cli initialisation, which means you are responsible for much of the heavy lifting, including loading the script, plugins and processor.  It also only creates one worker instance, so it's not really suitable for launching an actual loadtest
 
 # example
 
@@ -57,3 +57,7 @@ It simply exposes the artillery launcher around a thin promise wrapper, but this
         targetServer.close(t.end)
 
     })
+
+# phases
+
+By default a solo phase of `{ duration: 1, arrivalCount: 1 }` will be injected into the config if `config.phases` is not defined

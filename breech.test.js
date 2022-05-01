@@ -118,4 +118,68 @@ t.test('should correctly use variables in the scenario', async (t) => {
 
 })
 
+t.test('should correctly default to a single phase solo run', async (t) => {
 
+    const server = http.createServer()
+    const wss = new WebSocket.Server({ server })
+    const targetServer = server.listen(0)
+
+    wss.on('connection', function (ws) {
+        ws.on('message', ws.send.bind(ws))
+    })
+
+    let { port } = targetServer.address()
+
+    const script = {
+        config: {
+            target: `ws://127.0.0.1:${port}`
+        },
+        scenarios: [{
+            engine: 'ws',
+            flow: [
+                { send: 'foo' },
+                { send: 'bar' },
+                { send: 'baz' }
+            ]
+        }]
+    }
+
+    let res = await breech({ script })
+    t.equal(res?.aggregate?.counters['vusers.failed'], 0, 'no errors')
+    t.equal(res?.aggregate?.counters['websocket.messages_sent'], 3, 'all messages sent')
+    targetServer.close(t.end)
+
+})
+
+t.test('should throw an error if the config is missing', async (t) => {
+
+    const script = {
+        scenarios: [{
+            engine: 'ws',
+            flow: [ { send: 'foo' }]
+        }]
+    }
+
+    t.rejects(async () => {
+        let res = await breech({ script })
+    })
+
+    t.end()
+
+})
+
+t.test('should throw an error if the scenarios are missing', async (t) => {
+
+    const script = {
+        config: {
+            target: `ws://127.0.0.1`
+        }
+    }
+
+    t.rejects(async () => {
+        let res = await breech({ script })
+    })
+
+    t.end()
+    
+})
