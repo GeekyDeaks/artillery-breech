@@ -21,8 +21,7 @@ It simply exposes the artillery launcher around a thin promise wrapper, but this
     const WebSocket = require('ws')
     const breech = require('artillery-breech)
 
-
-    t.test('should run a websocket scenario', async (t) => {
+    t.test('should correctly use variables in the scenario', async (t) => {
 
         const server = http.createServer()
         const wss = new WebSocket.Server({ server })
@@ -37,14 +36,17 @@ It simply exposes the artillery launcher around a thin promise wrapper, but this
         const script = {
             config: {
                 target: `ws://127.0.0.1:${port}`,
-                phases: [{ duration: 1, arrivalCount: 1 }]
+                phases: [{ duration: 1, arrivalCount: 1 }],
+                variables: {
+                    foo: ['bar', 'baz']
+                }
             },
             scenarios: [{
                 engine: 'ws',
                 flow: [
-                    { send: 'foo' },
-                    { send: 'bar' },
-                    { send: 'baz' }
+                    { send: { payload: '{{ foo }}', match: { regexp: 'bar' } } },
+                    { send: { payload: '{{ foo }}', match: { regexp: 'baz' } } },
+                    { send: { payload: '{{ foo }}', match: { regexp: 'bar' } } }
                 ]
             }]
         }
