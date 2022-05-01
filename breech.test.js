@@ -81,3 +81,41 @@ t.test('should listen for the done event', async (t) => {
 
 })
 
+t.test('should correctly use variables in the scenario', async (t) => {
+
+    const server = http.createServer()
+    const wss = new WebSocket.Server({ server })
+    const targetServer = server.listen(0)
+
+    wss.on('connection', function (ws) {
+        ws.on('message', ws.send.bind(ws))
+    })
+
+    let { port } = targetServer.address()
+
+    const script = {
+        config: {
+            target: `ws://127.0.0.1:${port}`,
+            phases: [{ duration: 1, arrivalCount: 1 }],
+            variables: {
+                foo: ['bar', 'baz']
+            }
+        },
+        scenarios: [{
+            engine: 'ws',
+            flow: [
+                { send: { payload: '{{ foo }}', match: { regexp: 'bar' } } },
+                { send: { payload: '{{ foo }}', match: { regexp: 'baz' } } },
+                { send: { payload: '{{ foo }}', match: { regexp: 'bar' } } }
+            ]
+        }]
+    }
+
+    let res = await breech({ script })
+    t.equal(res?.aggregate?.counters['vusers.failed'], 0, 'no errors')
+    t.equal(res?.aggregate?.counters['websocket.messages_sent'], 3, 'all messages sent')
+    targetServer.close(t.end)
+
+})
+
+
