@@ -9,7 +9,7 @@
   "author": "sdeaks@gmail.com",
   "license": "ISC",
   "dependencies": {
-    "artillery": "github:artilleryio/artillery"
+    "artillery": "github:GeekyDeaks/artillery"
   },
   "devDependencies": {
     "tap": "^16.1.0",
